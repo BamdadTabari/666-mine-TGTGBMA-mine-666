@@ -1,10 +1,12 @@
 import sqlite3
 from pyrogram import errors
 import time
+import dbset as DB
 
 # This class will handle the scraping and adding of members.
 class Scraper:
     def __init__(self, client_manager, origin_group_id, destination_group_id):
+
         self.client_manager = client_manager
         self.origin_group_id = origin_group_id
         self.destination_group_id = destination_group_id
@@ -17,7 +19,7 @@ class Scraper:
         for client in self.client_manager.clients:
             for member in client.get_chat_members(self.origin_group_id):
                 # Check if user is already scraped
-                if not self.is_user_scraped(member.user.id):
+                if not DB.is_user_scraped(member.user.id):
                     try:
                         # Add user to contacts
                         client.add_contact(member.user.id, member.user.username)
@@ -32,22 +34,7 @@ class Scraper:
                         break                        
 
                     # Save user to database
-                    self.save_user(member.user.id, member.user.username)
+                    DB.save_user(member.user.id, member.user.username)
         # Stop all clients
         self.client_manager.stop_clients()
-
-    def is_user_scraped(self, user_id):
-        conn = sqlite3.connect('telegram_scraper.db')
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM scraped_users WHERE user_id=?", (user_id,))
-        result = cursor.fetchone()
-        conn.close()
-        return result is not None
-
-    def save_user(self, user_id, username):
-        conn = sqlite3.connect('telegram_scraper.db')
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO scraped_users (user_id, username) VALUES (?, ?)", (user_id, username))
-        conn.commit()
-        conn.close()
 
