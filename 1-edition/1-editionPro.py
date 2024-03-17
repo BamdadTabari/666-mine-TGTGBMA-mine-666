@@ -1,8 +1,8 @@
 from pyrogram import Client
-import OOP.dbset as DB
-import OOP.ClientManager as CM
-import OOP.Scraper as SC
-import OOP.helpers as helper
+from OOP.dbset import DatabaseManager as DB
+from OOP.ClientManager import ClientManager as CM
+from OOP.Scraper import Scraper as SC
+from OOP.helpers import helpers
 
 DB.create_database()
 
@@ -13,7 +13,7 @@ if __name__ == "__main__":
     client.start()
     client_manager = CM.ClientManager([client], api_id, api_hash)
     
-    origin_group_id,destination_group_id = helper.get_origin_and_dest_chat_id(client)
+    origin_group_id,destination_group_id = helpers.get_origin_and_dest_chat_id(client)
 
     scraper = SC.Scraper(client_manager, origin_group_id, destination_group_id)
 

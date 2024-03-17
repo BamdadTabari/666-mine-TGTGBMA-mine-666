@@ -1,12 +1,11 @@
-import sqlite3
 from pyrogram import errors
 import time
-import dbset as DB
+from dbset import DatabaseManager as DB
 
 # This class will handle the scraping and adding of members.
 class Scraper:
     def __init__(self, client_manager, origin_group_id, destination_group_id):
-
+        self.massage = " Be Clean Or I Will Kill You"
         self.client_manager = client_manager
         self.origin_group_id = origin_group_id
         self.destination_group_id = destination_group_id

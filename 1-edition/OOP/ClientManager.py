@@ -3,6 +3,7 @@ from pyrogram import Client
 # This class will manage multiple Telegram sessions (clients)
 class ClientManager:
     def __init__(self,clients, api_id, api_hash):
+        self.massage = " Be Clean Or I Will Kill You"
         self.clients = clients
         self.api_id = api_id
         self.api_hash = api_hash
