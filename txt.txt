@@ -1,0 +1,9 @@
+I want to build a telegram group to group bulk member adder app using Python. that use multiple telegram sessions (telegram user sesson), this is how I want to my app work:
+1. I can add clients ( telegram sessions) 
+2. clients will join to origin group, add members to their contacts
+3. then the clients will join into destination group and add all contacts that it gain from the origin group, to the destination group.
+4. the app must save the contacts that it scraped. and after adding them to destination, must delete all those contacts from each session(user).
+5.also, these scraped users must be added to another table in database. and when the app gonna scrap members next time it must check if scraped user was added to session(our user) before or not. if it was, then must pass from it, else , must add to contacts
+6. I prefer sqllite and pyrogram. but what ever you think is better choose that.
+7.this was just a part of my app. there is more. like, strategies against getting ban from telegram. 
+write the whole code by detail and describe for me step by step and add comments for your classes, methods and variable
