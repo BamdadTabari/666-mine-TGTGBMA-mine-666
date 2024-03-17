@@ -1,5 +1,6 @@
 import sqlite3
-from pyrogram import Client
+from pyrogram import Client, errors
+import time
 
 # We'll use SQLite for simplicity. 
 #This database will store the scraped users to avoid adding them multiple times.
@@ -15,8 +16,8 @@ create_database()
 
 # This class will manage multiple Telegram sessions (clients)
 class ClientManager:
-    def __init__(self, api_id, api_hash):
-        self.clients = []
+    def __init__(self,clients, api_id, api_hash):
+        self.clients = clients
         self.api_id = api_id
         self.api_hash = api_hash
 
@@ -27,7 +28,11 @@ class ClientManager:
 
     def start_clients(self):
         for client in self.clients:
-            client.start()
+            try:
+                client.start()
+            except Exception as e:
+                print(f"Exception : {e}")
+                continue
 
     def stop_clients(self):
         for client in self.clients:
@@ -50,13 +55,21 @@ class Scraper:
             for member in client.get_chat_members(self.origin_group_id):
                 # Check if user is already scraped
                 if not self.is_user_scraped(member.user.id):
-                    # Add user to contacts
-                    client.add_contact(member.user.id, member.user.username)
-                    # Add user to destination group
-                    client.add_chat_members(self.destination_group_id, member.user.id)
+                    try:
+                        # Add user to contacts
+                        client.add_contact(member.user.id, member.user.username)
+                        # Add user to destination group
+                        client.add_chat_members(self.destination_group_id, member.user.id)
+                    except errors.PeerFloodError:
+                        print(f"""PEER_FLOOD error encountered. Probably this client is limited , check it,\n
+                              client data: {client.get_me()}
+                              \n
+                              Waiting for 5 seconds before changing client.""")
+                        time.sleep(5) # Wait for 60 seconds before retrying
+                        break                        
+
                     # Save user to database
                     self.save_user(member.user.id, member.user.username)
-
         # Stop all clients
         self.client_manager.stop_clients()
 
@@ -75,13 +88,23 @@ class Scraper:
         conn.commit()
         conn.close()
 
-if __name__ == "__main__":
-    api_id = "YOUR_API_ID"
-    api_hash = "YOUR_API_HASH"
-    origin_group_id = "ORIGIN_GROUP_ID"
-    destination_group_id = "DESTINATION_GROUP_ID"
 
-    client_manager = ClientManager(api_id, api_hash)
+def get_group_id(client, group_username):
+    group_info = client.get_chat(group_username)
+    return group_info.id
+
+if __name__ == "__main__":
+    api_id = 27356729
+    api_hash = "2076532de16fc82d242fcc1a012ce5f1"
+    client = Client("666mineTGTGBMAmine", api_id=api_id, api_hash=api_hash)
+    client.start()
+    client_manager = ClientManager([client], api_id, api_hash)
+    
+    origin_group_username = input("origin_group_username please bitch: ")
+    destination_group_username = input("destination_group_username please bitch: ")
+    origin_group_id = get_group_id(client, origin_group_username)
+    destination_group_id = get_group_id(client, destination_group_username)
+
     scraper = Scraper(client_manager, origin_group_id, destination_group_id)
 
     scraper.scrape_and_add_members()
