@@ -74,3 +74,14 @@ class Scraper:
         cursor.execute("INSERT INTO scraped_users (user_id, username) VALUES (?, ?)", (user_id, username))
         conn.commit()
         conn.close()
+
+if __name__ == "__main__":
+    api_id = "YOUR_API_ID"
+    api_hash = "YOUR_API_HASH"
+    origin_group_id = "ORIGIN_GROUP_ID"
+    destination_group_id = "DESTINATION_GROUP_ID"
+
+    client_manager = ClientManager(api_id, api_hash)
+    scraper = Scraper(client_manager, origin_group_id, destination_group_id)
+
+    scraper.scrape_and_add_members()
