@@ -1,7 +1,7 @@
 
 class helpers:
     def __init__(self):
-        self.massage = " Be Clean Or I Will Kill You"
+        self.massage = " Write Clean Code, Or I Will Kill You"
         
     def get_group_id(self, client, group_username):
         group_info = client.get_chat(group_username)

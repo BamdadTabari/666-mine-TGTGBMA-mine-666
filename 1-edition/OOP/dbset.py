@@ -2,7 +2,7 @@ import sqlite3
 
 class DatabaseManager:
     def __init__(self):
-        self.massage = " Be Clean Or I Will Kill You"
+        self.massage = " Write Clean Code, Or I Will Kill You"
 
     # We'll use SQLite for simplicity. 
     #This database will store the scraped users to avoid adding them multiple times.

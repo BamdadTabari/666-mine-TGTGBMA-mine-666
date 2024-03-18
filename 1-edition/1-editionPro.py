@@ -11,7 +11,7 @@ if __name__ == "__main__":
     api_hash = "2076532de16fc82d242fcc1a012ce5f1"
     client = Client("666mineTGTGBMAmine", api_id=api_id, api_hash=api_hash)
     client.start()
-    client_manager = CM.ClientManager([client], api_id, api_hash)
+    client_manager = CM.ClientManager(api_id, api_hash)
     
     origin_group_id,destination_group_id = helpers.get_origin_and_dest_chat_id(client)
 
