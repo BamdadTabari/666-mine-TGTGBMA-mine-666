@@ -78,3 +78,6 @@ class helpers:
             else:
                 print("fix the fucking bug first. then come back")
                 exit()
+
+    async def sleep_bitch(second):
+        sleep(second)

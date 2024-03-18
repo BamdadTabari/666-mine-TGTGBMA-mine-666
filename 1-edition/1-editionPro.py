@@ -1,21 +1,35 @@
-from pyrogram import Client
 from OOP.dbset import DatabaseManager as DB
 from OOP.ClientManager import ClientManager as CM
 from OOP.Scraper import Scraper as SC
 from OOP.helpers import helpers
 
+RETRY_COUNT = 2
+    
 async def main():
-    DB.create_database()
+    retry = 0
+    try:
+        DB.create_database()
+        await handle_user_actions()
+    except Exception as e:
+        print(f"Exception: {e}")
+        await helpers.sleep_bitch(2)
+        if retry <= RETRY_COUNT:
+            retry += 1
+            await main()
+        else:
+            print("fix the fucking bug first. then come back")
+            exit()
     
-    
-def handle_user_actions():
+async def handle_user_actions():
     print("""
             welcome to my app \n I am Uncle Bamdad \n What You Want to do? \n 
             [1] Add new client \n [2] Add members to your group \n [3] Exit
     """)
-    client_manager = CM()
+
+    client_manager = CM(api_id=18464835, api_hash="3742f387f1d2804a5799bbd8e7790deb")
     origin_group_id,destination_group_id = helpers.get_origin_and_dest_chat_id()
     scraper = SC(client_manager,origin_group_id,destination_group_id)
+
     try:
         user_choice = input("Just write the number and press enter: ")
         if user_choice == str(1):
@@ -29,6 +43,7 @@ def handle_user_actions():
         handle_user_actions()
         
 
+# start point
 if __name__ == "__main__":
     print("""
           6666666666666666666   6666666666666666666   6666666666666666666 
