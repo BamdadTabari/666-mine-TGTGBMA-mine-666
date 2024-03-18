@@ -12,7 +12,7 @@ class ClientManager:
         self.api_hash = api_hash
        
 
-    async def add_client(self, session_name):
+    async def add_client(self):
         try:
             session_name = input('Input session name: ')
             async with Client(session_name, workdir=self.CLIENTS_DIR) as new_client:
