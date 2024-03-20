@@ -1,28 +1,28 @@
-from OOP.dbset import DatabaseManager as DB
+import OOP.DatabaseManager as DBM
 from OOP.ClientManager import ClientManager as CM
 from OOP.Scraper import Scraper as SC
 from OOP.helpers import helpers
 
 RETRY_COUNT = 2
-    
-async def main():
+DB = DBM.DatabaseManager()
+def main():
     retry = 0
     try:
         DB.create_database()
-        await handle_user_actions()
+        handle_user_actions()
     except Exception as e:
         print(f"Exception: {e}")
-        await helpers.sleep_bitch(2)
+        helpers.sleep_bitch(2)
         if retry <= RETRY_COUNT:
             retry += 1
-            await main()
+            main()
         else:
             print("fix the fucking bug first. then come back")
             exit()
     
-async def handle_user_actions():
+def handle_user_actions():
     print("""
-            welcome to my app \n I am Uncle Bamdad \n What You Want to do? \n 
+            \n welcome to my app \n I am Uncle Bamdad \n What You Want to do?
             [1] Add new client \n [2] Add members to your group \n [3] Exit
     """)
 
@@ -61,6 +61,6 @@ if __name__ == "__main__":
            star my projects on github: https://github.com/BamdadTabari
            see my articles in medium site: https://medium.com/@bamdadtabari/
     """)
-     
-    main()
+
+main()
 

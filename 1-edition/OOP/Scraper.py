@@ -1,7 +1,7 @@
 from pyrogram import errors
 import time
-from dbset import DatabaseManager as DB
-
+import OOP.DatabaseManager as DBM
+DB = DBM.DatabaseManager()
 # This class will handle the scraping and adding of members.
 class Scraper:
     def __init__(self, client_manager, origin_group_id, destination_group_id):
