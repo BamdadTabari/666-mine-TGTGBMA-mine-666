@@ -3,14 +3,15 @@ import time
 import OOP.DatabaseManager as DBM
 DB = DBM.DatabaseManager()
 # This class will handle the scraping and adding of members.
+
 class Scraper:
-    def __init__(self, client_manager, origin_group_id, destination_group_id):
+    async def __init__(self, client_manager, origin_group_id, destination_group_id):
         self.massage = " Write Clean Code, Or I Will Kill You"
         self.client_manager = client_manager
         self.origin_group_id = origin_group_id
         self.destination_group_id = destination_group_id
 
-    def scrape_and_add_members(self):
+    async def scrape_and_add_members(self):
         # Start all clients
         self.client_manager.start_clients()
 
@@ -18,7 +19,7 @@ class Scraper:
         for client in self.client_manager.clients:
             for member in client.get_chat_members(self.origin_group_id):
                 # Check if user is already scraped
-                if not DB.is_user_scraped(member.user.id):
+                if not await DB.is_user_scraped(member.user.id):
                     try:
                         # Add user to contacts
                         client.add_contact(member.user.id, member.user.username)
@@ -33,7 +34,8 @@ class Scraper:
                         break                        
 
                     # Save user to database
-                    DB.save_user(member.user.id, member.user.username)
+                    await DB.save_user(member.user.id, member.user.username)
         # Stop all clients
-        self.client_manager.stop_clients()
+        await self.client_manager.stop_clients()
 
+ 

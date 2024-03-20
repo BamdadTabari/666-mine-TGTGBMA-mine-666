@@ -9,7 +9,7 @@ DB = DBM.DatabaseManager()
 async def main():
     retry = 0
     try:
-        DB.create_database()
+        await DB.create_database()
         handle_user_actions()
     except Exception as e:
         print(f"Exception: {e}")
