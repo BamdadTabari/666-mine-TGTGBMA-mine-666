@@ -5,23 +5,24 @@ import os
 class ClientManager:
     CLIENTS_DIR = './clients'
     CLIENTS = []
-    def __init__(self, api_id, api_hash):
+    async def __init__(self, api_id, api_hash):
         self.massage = " Write Clean Code, Or I Will Kill You"
-
         if not os.path.exists(self.CLIENTS_DIR):
             os.makedirs(self.CLIENTS_DIR) # Create the directory if it doesn't exist
-        self.prepare_clients()
-
+        self.CLIENTS = self.prepare_clients()
         self.clients = self.CLIENTS 
         self.api_id = api_id
         self.api_hash = api_hash
        
-    def prepare_clients(self):
-        for file in os.listdir(self.CLIENTS_DIR):
-            if not file.endswith(".session"):
+    async def prepare_clients(self):
+        for f in os.listdir(CLIENTS_DIR):
+            if not f.endswith(".session"):
                 continue
-            session_name = file.replace('.session', '')
+            session_name = f.replace('.session', '')
+            print(f'\n- Client({session_name})')
             client = Client(session_name, workdir=self.CLIENTS_DIR)
+            await client.start()
+            print(f'  - Client({session_name}): Started')
             self.CLIENTS.append(client)
 
     async def add_client(self):

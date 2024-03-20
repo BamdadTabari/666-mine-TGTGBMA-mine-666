@@ -79,5 +79,5 @@ class helpers:
                 print("fix the fucking bug first. then come back")
                 exit()
 
-    async def sleep_bitch(second):
+    async def sleep_bitch(self,second):
         sleep(second)

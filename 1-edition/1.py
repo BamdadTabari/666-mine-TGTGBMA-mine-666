@@ -1,15 +1,15 @@
 import asyncio
-import OOP.DatabaseManager as DBM
+import OOP.DatabaseManager as DB
 from OOP.ClientManager import ClientManager as CM
 from OOP.Scraper import Scraper as SC
 from OOP.helpers import helpers
 
 RETRY_COUNT = 2
-DB = DBM.DatabaseManager()
+
 async def main():
     retry = 0
     try:
-        await DB.create_database()
+        DB.create_database()
         handle_user_actions()
     except Exception as e:
         print(f"Exception: {e}")
