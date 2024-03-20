@@ -3,26 +3,26 @@ from time import sleep
 
 class helpers:
     RETRY_COUNT = 2
-    def __init__(self):
+    async def __init__(self):
         self.massage = " Write Clean Code, Or I Will Kill You"
         
-    def get_group_id(self, client, group_username):
+    async def get_group_id(self, client, group_username):
         retry = 0
         try:
-            group_info = client.get_chat(group_username)
+            group_info = await client.get_chat(group_username)
             return group_info.id
         except Exception as e:
             print(f"Exception: {e}")
             sleep(1)
             if retry <= self.RETRY_COUNT:
                 retry += 1
-                self.get_group_id()
+                await self.get_group_id()
             else:
                 print("fix the fucking bug first. then come back")
                 exit()
 
 
-    def get_origin_and_dest_chat_id(self):
+    async def get_origin_and_dest_chat_id(self):
         retry = 0
         try:
              # start client just for get chats ids
@@ -45,7 +45,7 @@ class helpers:
                 print("fix the fucking bug first. then come back")
                 exit()
     
-    def start_helper_client(self):
+    async def start_helper_client(self):
         retry = 0
         try:
             api_id = 27356729
@@ -64,7 +64,7 @@ class helpers:
                 exit()
         
     
-    def stop_helper_client(self, client):
+    async def stop_helper_client(self, client):
         retry = 0
         try:
             client.stop()
@@ -79,5 +79,5 @@ class helpers:
                 print("fix the fucking bug first. then come back")
                 exit()
 
-    def sleep_bitch(second):
+    async def sleep_bitch(second):
         sleep(second)

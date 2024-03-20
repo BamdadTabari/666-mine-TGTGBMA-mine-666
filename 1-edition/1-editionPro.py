@@ -1,3 +1,4 @@
+import asyncio
 import OOP.DatabaseManager as DBM
 from OOP.ClientManager import ClientManager as CM
 from OOP.Scraper import Scraper as SC
@@ -5,7 +6,7 @@ from OOP.helpers import helpers
 
 RETRY_COUNT = 2
 DB = DBM.DatabaseManager()
-def main():
+async def main():
     retry = 0
     try:
         DB.create_database()
@@ -20,7 +21,7 @@ def main():
             print("fix the fucking bug first. then come back")
             exit()
     
-def handle_user_actions():
+async def handle_user_actions():
     print("""
             \n welcome to my app \n I am Uncle Bamdad \n What You Want to do?
             [1] Add new client \n [2] Add members to your group \n [3] Exit
