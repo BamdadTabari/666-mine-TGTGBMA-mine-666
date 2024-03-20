@@ -5,18 +5,18 @@ import os
 class ClientManager:
     CLIENTS_DIR = './clients'
     CLIENTS = []
-    async def __init__(self, api_id, api_hash):
+    def __init__(self, api_id, api_hash):
         self.massage = " Write Clean Code, Or I Will Kill You"
 
         if not os.path.exists(self.CLIENTS_DIR):
             os.makedirs(self.CLIENTS_DIR) # Create the directory if it doesn't exist
-        await self.prepare_clients()
+        self.prepare_clients()
 
         self.clients = self.CLIENTS 
         self.api_id = api_id
         self.api_hash = api_hash
        
-    async def prepare_clients(self):
+    def prepare_clients(self):
         for file in os.listdir(self.CLIENTS_DIR):
             if not file.endswith(".session"):
                 continue

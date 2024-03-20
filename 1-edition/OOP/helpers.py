@@ -3,7 +3,7 @@ from time import sleep
 
 class helpers:
     RETRY_COUNT = 2
-    async def __init__(self):
+    def __init__(self):
         self.massage = " Write Clean Code, Or I Will Kill You"
         
     async def get_group_id(self, client, group_username):

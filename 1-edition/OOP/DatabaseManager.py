@@ -1,7 +1,7 @@
 import sqlite3
 
 class DatabaseManager:
-    async def __init__(self):
+    def __init__(self):
         self.massage = " Write Clean Code, Or I Will Kill You"
 
     # We'll use SQLite for simplicity. 

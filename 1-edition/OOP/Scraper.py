@@ -5,7 +5,7 @@ DB = DBM.DatabaseManager()
 # This class will handle the scraping and adding of members.
 
 class Scraper:
-    async def __init__(self, client_manager, origin_group_id, destination_group_id):
+    def __init__(self, client_manager, origin_group_id, destination_group_id):
         self.massage = " Write Clean Code, Or I Will Kill You"
         self.client_manager = client_manager
         self.origin_group_id = origin_group_id
