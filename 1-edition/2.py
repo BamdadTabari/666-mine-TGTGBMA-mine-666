@@ -215,7 +215,7 @@ def main():
 def handle_user_actions():
     print("""
             \n welcome to my app \n I am Uncle Bamdad \n What You Want to do?
-            \n[1] Add new client \n [2] Add members to your group \n [3] Exit
+            \n [1] Add new client \n [2] Add members to your group \n [3] Exit
     """)
 
     origin_group_id,destination_group_id = get_origin_and_dest_chat_id()
