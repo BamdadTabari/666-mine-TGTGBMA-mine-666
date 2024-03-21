@@ -165,8 +165,10 @@ def sleep_bitch(second):
 # -----------------Scraper PART Start-------------------#
 from pyrogram import errors
 
-def scrape_and_add_members(origin_group_id,destination_group_id):
-    
+def scrape_and_add_members():
+    # get org and dest chat id using helper client
+    origin_group_id,destination_group_id = get_origin_and_dest_chat_id()
+
     # prepare all clients
     prepare_clients()
     
@@ -218,14 +220,12 @@ def handle_user_actions():
             \n [1] Add new client \n [2] Add members to your group \n [3] Exit
     """)
 
-    origin_group_id,destination_group_id = get_origin_and_dest_chat_id()
-
     try:
         user_choice = input("Just write the number and press enter: ")
         if user_choice == str(1):
             add_client()
         elif user_choice == str(2):
-            scrape_and_add_members(origin_group_id, destination_group_id)
+            scrape_and_add_members()
         elif user_choice == str(3):
             exit()
     except Exception as e:
