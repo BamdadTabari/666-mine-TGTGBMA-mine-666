@@ -1,3 +1,5 @@
+RETRY_COUNT = 2
+#-------------------------------------------------------
 import sqlite3
 
 # -----------------DB PART START-------------------#
@@ -73,7 +75,6 @@ def stop_clients():
 
 # -----------------Helper PART Start-------------------#
 from time import sleep
-RETRY_COUNT = 2
         
 def get_group_id( client, group_username):
     retry = 0
@@ -182,8 +183,42 @@ def scrape_and_add_members(origin_group_id,destination_group_id):
     stop_clients()
 
 # -----------------Scraper PART End-------------------#
-    
 
-if __name__ == "__main__":
+def main():
+    retry = 0
+    try:
+        create_database()
+        handle_user_actions()
+    except Exception as e:
+        print(f"Exception: {e}")
+        sleep_bitch(2)
+        if retry <= RETRY_COUNT:
+            retry += 1
+            main()
+        else:
+            print("fix the fucking bug first. then come back")
+            exit()
     
-    pass
+def handle_user_actions():
+    print("""
+            \n welcome to my app \n I am Uncle Bamdad \n What You Want to do?
+            [1] Add new client \n [2] Add members to your group \n [3] Exit
+    """)
+
+    origin_group_id,destination_group_id = get_origin_and_dest_chat_id()
+
+    try:
+        user_choice = input("Just write the number and press enter: ")
+        if user_choice == str(1):
+            add_client()
+        elif user_choice == str(2):
+            scrape_and_add_members(origin_group_id, destination_group_id)
+        elif user_choice == str(3):
+            exit()
+    except Exception as e:
+        print(f"Exception: {e}")
+        handle_user_actions()
+        
+# start poit
+if __name__ == "__main__":
+    main()
