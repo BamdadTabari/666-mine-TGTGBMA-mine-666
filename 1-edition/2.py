@@ -1,8 +1,10 @@
 RETRY_COUNT = 2
 #-------------------------------------------------------
-import sqlite3
+
 
 # -----------------DB PART START-------------------#
+
+import sqlite3
 # We'll use SQLite for simplicity. 
 #This database will store the scraped users to avoid adding them multiple times.
 def create_database():
@@ -40,10 +42,10 @@ if not os.path.exists(CLIENTS_DIR):
     os.makedirs(CLIENTS_DIR) # Create the directory if it doesn't exist
        
 def prepare_clients():
-    for f in os.listdir(CLIENTS_DIR):
-        if not f.endswith(".session"):
+    for file in os.listdir(CLIENTS_DIR):
+        if not file.endswith(".session"):
             continue
-    session_name = f.replace('.session', '')
+    session_name = file.replace('.session', '')
     print(f'\n- Client({session_name})')
     client = Client(session_name, workdir=CLIENTS_DIR)
     client.start()
@@ -51,13 +53,20 @@ def prepare_clients():
     CLIENTS.append(client)
 
 def add_client():
+    """
+    Creates a new Telegram client session using the Pyrogram library.
+    The session is stored in the CLIENTS_DIR with a filename based on the session name provided by the user.
+    """
     try:
+        # Prompt the user to input a session name
         session_name = input('Input session name: ')
-        with Client(session_name, workdir=CLIENTS_DIR) as new_client:
+        # Create a new client session with the specified session name and working directory
+        with Client(f"{session_name}.session", workdir=CLIENTS_DIR) as new_client:
+            # Print a message indicating the creation of a new client, including the database associated with the new client
             print(f'- New Client {new_client.storage.database}')
     except Exception as e:
+        # Catch and print any exceptions that occur during the client creation and initialization process
         print(f"Exception : {e}")
-        pass
 
 def start_clients():
     for client in CLIENTS:
@@ -157,6 +166,10 @@ def sleep_bitch(second):
 from pyrogram import errors
 
 def scrape_and_add_members(origin_group_id,destination_group_id):
+    
+    # prepare all clients
+    prepare_clients()
+    
     # Start all clients
     start_clients()
 
@@ -202,7 +215,7 @@ def main():
 def handle_user_actions():
     print("""
             \n welcome to my app \n I am Uncle Bamdad \n What You Want to do?
-            [1] Add new client \n [2] Add members to your group \n [3] Exit
+            \n[1] Add new client \n [2] Add members to your group \n [3] Exit
     """)
 
     origin_group_id,destination_group_id = get_origin_and_dest_chat_id()
