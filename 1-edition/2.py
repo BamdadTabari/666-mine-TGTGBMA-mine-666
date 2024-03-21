@@ -1,30 +1,28 @@
-HELPER_CLIENT = None
-RETRY_COUNT = 2
 #--------------- signal handler part start---------------------
 # this will use in case of app crash or user closed app
     
-import signal
-import sys
-import traceback
+# import signal
+# import sys
+# import traceback
 
-def signal_handler(sig, frame):
-    """
-    This function will be called when the application receives a SIGINT or SIGTERM signal.
-    """
-    print("Caught signal:", sig)
-    print("Performing cleanup...")
-    try:
-        stop_helper_client(HELPER_CLIENT)
-    except:
-        pass
-    # Print a stack trace to help with debugging
-    traceback.print_stack(frame)
-    print("Cleanup complete. Exiting.")
-    sys.exit(0)
+# def signal_handler(sig, frame):
+#     """
+#     This function will be called when the application receives a SIGINT or SIGTERM signal.
+#     """
+#     print("Caught signal:", sig)
+#     print("Performing cleanup...")
+#     try:
+#         stop_helper_client(HELPER_CLIENT)
+#     except:
+#         pass
+#     # Print a stack trace to help with debugging
+#     traceback.print_stack(frame)
+#     print("Cleanup complete. Exiting.")
+#     sys.exit(0)
 
-# Register the signal handler for SIGINT, SIGTERM, CTRL_BREAK_EVENT, CTRL_C_EVENT
-signal.signal(signal.SIGINT, signal_handler)
-signal.signal(signal.SIGTERM, signal_handler)
+# # Register the signal handler for SIGINT, SIGTERM, CTRL_BREAK_EVENT, CTRL_C_EVENT
+# signal.signal(signal.SIGINT, signal_handler)
+# signal.signal(signal.SIGTERM, signal_handler)
 
 #--------------- signal handler part end---------------------
 
@@ -68,15 +66,14 @@ if not os.path.exists(CLIENTS_DIR):
     os.makedirs(CLIENTS_DIR) # Create the directory if it doesn't exist
        
 def prepare_clients():
-    for file in os.listdir(CLIENTS_DIR):
+    files = os.listdir(CLIENTS_DIR)
+    for file in files:
         if not file.endswith(".session"):
             continue
-    session_name = file.replace('.session', '')
-    print(f'\n- Client({session_name})')
-    client = Client(session_name, workdir=CLIENTS_DIR)
-    client.start()
-    print(f'  - Client({session_name}): Started')
-    CLIENTS.append(client)
+        session_name = file.replace('.session', '')
+        print(f'\n- Client({session_name})')
+        client = Client(session_name, workdir=CLIENTS_DIR)
+        CLIENTS.append(client)
 
 def add_client():
     """
@@ -120,23 +117,16 @@ def stop_clients():
 from time import sleep
         
 def get_group_id( client, group_username):
-    retry = 0
     try:
         group_info =  client.get_chat(group_username)
         return group_info.id
     except Exception as e:
         print(f"Exception: {e}")
-        sleep_bitch(1)
-        if retry <= RETRY_COUNT:
-            retry += 1
-            get_group_id()
-        else:
-                print("fix the fucking bug first. then come back")
-                exit()
+        print("fix the fucking bug first. then come back")
+        exit()
 
 
 def get_origin_and_dest_chat_id():
-    retry = 0
     try:
         # start client just for get chats ids
         client = start_helper_client()
@@ -149,49 +139,30 @@ def get_origin_and_dest_chat_id():
         stop_helper_client(client)
         return origin_group_id,destination_group_id
     except Exception as e:
-            print(f"Exception: {e}")
-            sleep_bitch(1)
-            if retry <= RETRY_COUNT:
-                retry += 1
-                get_origin_and_dest_chat_id()
-            else:
-                print("fix the fucking bug first. then come back")
-                exit()
+        print(f"Exception: {e}")
+        print("fix the fucking bug first. then come back")
+        exit()
     
 def start_helper_client():
-    retry = 0
     try:
-        api_id = 27356729
-        api_hash = "2076532de16fc82d242fcc1a012ce5f1"
-        client = Client("666mineTGTGBMAmine", api_id=api_id, api_hash=api_hash)
-        HELPER_CLIENT = client
+        # api_id = 27356729
+        # api_hash = "2076532de16fc82d242fcc1a012ce5f1"
+        client = Client("666mineTGTGBMAmine", api_id=API_ID, api_hash=API_HASH)
         client.start()
         return client
     except Exception as e:
         print(f"Exception: {e}")
-        sleep_bitch(1)
-        if retry <= RETRY_COUNT:
-            retry += 1
-            start_helper_client()
-        else:
-            print("fix the fucking bug first. then come back")
-            exit()
+        print("fix the fucking bug first. then come back")
+        exit(0) 
         
     
 def stop_helper_client(client):
-    retry = 0
     try:
         client.stop()
-        client.disconnect()
     except Exception as e:
         print(f"Exception: {e}")
-        sleep_bitch(1)
-        if retry <= RETRY_COUNT:
-            retry += 1
-        stop_helper_client()
-    else:
         print("fix the fucking bug first. then come back")
-        exit()
+        exit(0) 
 
 def sleep_bitch(second):
         sleep(second)
@@ -235,20 +206,15 @@ def scrape_and_add_members():
 # -----------------Scraper PART End-------------------#
 
 def main():
-    retry = 0
+    
     try:
         create_database()
         handle_user_actions()
     except Exception as e:
         print(f"Exception: {e}")
-        sleep_bitch(2)
-        if retry <= RETRY_COUNT:
-            retry += 1
-            main()
-        else:
-            print("fix the fucking bug first. then come back")
-            exit()
-    
+        print("fix the fucking bug first. then come back")
+        exit()
+
 def handle_user_actions():
     print("""
             \n welcome to my app \n I am Uncle Bamdad \n What You Want to do?
@@ -267,6 +233,6 @@ def handle_user_actions():
         print(f"Exception: {e}")
         handle_user_actions()
         
-# start poit
+# start point
 if __name__ == "__main__":
     main()
