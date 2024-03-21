@@ -22,9 +22,12 @@ def signal_handler(sig, frame):
     print("Cleanup complete. Exiting.")
     sys.exit(0)
 
-# Register the signal handler for SIGINT and SIGTERM
+# Register the signal handler for SIGINT, SIGTERM, CTRL_BREAK_EVENT, CTRL_C_EVENT
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
+signal.signal(signal.CTRL_BREAK_EVENT, signal_handler)
+signal.signal(signal.CTRL_C_EVENT, signal_handler)
+
 #--------------- signal handler part end---------------------
 
 # -----------------DB PART START-------------------#
