@@ -1,6 +1,31 @@
+HELPER_CLIENT = None
 RETRY_COUNT = 2
-#-------------------------------------------------------
+#--------------- signal handler part start---------------------
+# this will use in case of app crash or user closed app
+    
+import signal
+import sys
+import traceback
 
+def signal_handler(sig, frame):
+    """
+    This function will be called when the application receives a SIGINT or SIGTERM signal.
+    """
+    print("Caught signal:", sig)
+    print("Performing cleanup...")
+    try:
+        stop_helper_client(HELPER_CLIENT)
+    except:
+        pass
+    # Print a stack trace to help with debugging
+    traceback.print_stack(frame)
+    print("Cleanup complete. Exiting.")
+    sys.exit(0)
+
+# Register the signal handler for SIGINT and SIGTERM
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
+#--------------- signal handler part end---------------------
 
 # -----------------DB PART START-------------------#
 
@@ -130,6 +155,7 @@ def start_helper_client():
         api_id = 27356729
         api_hash = "2076532de16fc82d242fcc1a012ce5f1"
         client = Client("666mineTGTGBMAmine", api_id=api_id, api_hash=api_hash)
+        HELPER_CLIENT = client
         client.start()
         return client
     except Exception as e:
