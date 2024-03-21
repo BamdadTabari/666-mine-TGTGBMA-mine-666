@@ -58,7 +58,7 @@ def save_user(user_id, username):
 # -----------------ClientManager PART START-------------------#
 import os
 from pyrogram import Client
-CLIENTS_DIR = './clients'
+CLIENTS_DIR = os.getcwd() + '\\1-edition\\clients'
 CLIENTS = []
 API_ID = 18464835
 API_HASH = "3742f387f1d2804a5799bbd8e7790deb"
@@ -169,7 +169,7 @@ def sleep_bitch(second):
 # -----------------Helper PART End-------------------#
         
 # -----------------Scraper PART Start-------------------#
-from pyrogram import errors
+from pyrogram.errors import PeerFlood
 
 def scrape_and_add_members():
     # get org and dest chat id using helper client
@@ -183,7 +183,8 @@ def scrape_and_add_members():
 
     # Scrape members from origin group
     for client in CLIENTS:
-        for member in client.get_chat_members(origin_group_id):
+        members = client.get_chat_members(origin_group_id)
+        for member in members:
             # Check if user is already scraped
             if not is_user_scraped(member.user.id):
                 try:
@@ -191,7 +192,8 @@ def scrape_and_add_members():
                     client.add_contact(member.user.id, member.user.username)
                     # Add user to destination group
                     client.add_chat_members(destination_group_id, member.user.id)
-                except errors.PeerFloodError:
+                except PeerFlood as pe:
+                    print(f"Exception:  {pe}")
                     print(f"""PEER_FLOOD error encountered. Probably this client is limited , check it,\n
                         client data: {client.get_me()}\n
                         Waiting for 5 seconds before changing client.""")
@@ -236,3 +238,5 @@ def handle_user_actions():
 # start point
 if __name__ == "__main__":
     main()
+  
+
