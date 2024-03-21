@@ -25,8 +25,6 @@ def signal_handler(sig, frame):
 # Register the signal handler for SIGINT, SIGTERM, CTRL_BREAK_EVENT, CTRL_C_EVENT
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
-signal.signal(signal.CTRL_BREAK_EVENT, signal_handler)
-signal.signal(signal.CTRL_C_EVENT, signal_handler)
 
 #--------------- signal handler part end---------------------
 
@@ -89,9 +87,17 @@ def add_client():
         # Prompt the user to input a session name
         session_name = input('Input session name: ')
         # Create a new client session with the specified session name and working directory
-        with Client(f"{session_name}.session", workdir=CLIENTS_DIR) as new_client:
+        with Client(f"{session_name}", api_id = API_ID, api_hash = API_HASH , workdir=CLIENTS_DIR) as new_client:
             # Print a message indicating the creation of a new client, including the database associated with the new client
             print(f'- New Client {new_client.storage.database}')
+            want_add_another = input("do you want to add another client? (y/n)")
+            if want_add_another == "y":
+                add_client()
+            elif want_add_another == "n":
+                main()
+            else:
+                print("wrong character. Redirecting to main menu..." )
+                main()
     except Exception as e:
         # Catch and print any exceptions that occur during the client creation and initialization process
         print(f"Exception : {e}")
