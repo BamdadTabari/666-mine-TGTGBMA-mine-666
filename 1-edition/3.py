@@ -173,7 +173,24 @@ async def scrape_and_add_members():
                     # Add user to contacts
                     await client.add_contact(member.user.id, member.user.username)
                     # Add user to destination group
-                    await client.add_chat_members(destination_group_id, member.user.id)
+                    try:
+                        # Attempt to add user to group
+                        await client.add_chat_members(destination_group_id, member.user.id)
+                    except pyer.Flood as ex:
+                        print(f"Exception: {ex}")
+                        await client.delete_contacts(member.user.id)
+                        break
+                        # Handle flood error
+                    except pyer.UserPrivacyRestricted as ex:
+                        print(f"Exception: {ex}")
+                        await client.delete_contacts(member.user.id)
+                        continue
+                        # Handle privacy restricted error
+                    except pyer.UserNotMutualContact as ex:
+                        print(f"Exception: {ex}")
+                        await client.delete_contacts(member.user.id)
+                        continue
+                        # Handle not mutual contact error
                     # delete user from contacts
                     await client.delete_contacts(member.user.id)
                 except pyer.Flood as ex:
