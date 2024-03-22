@@ -180,9 +180,52 @@ async def scrape_and_add_members():
                     print(f"Exception:  {ex.MESSAGE}")
                     print(f"client data: {await client.get_me()}")
                     break
+                except pyer.RpcConnectFailed as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}")
+                    continue
+                except pyer.AccessTokenExpired as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}")
+                except pyer.ActiveUserRequired as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}")
+                except pyer.AccessTokenInvalid as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}")
+                except pyer.ApiCallError as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}")
+                except pyer.ApiIdInvalid as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}")
+                except pyer.ApiIdPublishedFlood as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}")   
+                except pyer.BadRequest as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}") 
+                except pyer.flood_420 as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}")
+                except pyer.PeerFlood as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}")
+                except pyer.PhoneNumberFlood as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}")
+                except pyer.FloodWait as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}")
+                except pyer.PhoneNumberBanned as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}")
+                except pyer.UserBannedInChannel as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {await client.get_me()}")
                 except Exception as ex:
                     print(f"Exception: {ex}")
-                    continue                       
+                    break                       
                 finally:
                     # Save user to database
                     await save_user(member.user.id, member.user.username)
