@@ -198,7 +198,10 @@ def scrape_and_add_members():
                         client data: {client.get_me()}\n
                         Waiting for 5 seconds before changing client.""")
                     sleep(5) # Wait for 60 seconds before retrying
-                    break                        
+                    break 
+                except Exception as ex:
+                    print(f"Exception: {ex}")
+                    break                       
                 finally:
                     # Save user to database
                     save_user(member.user.id, member.user.username)
