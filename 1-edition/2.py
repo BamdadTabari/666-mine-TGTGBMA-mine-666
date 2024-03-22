@@ -170,7 +170,8 @@ async def scrape_and_add_members():
                     await client.add_contact(member.user.id, member.user.username)
                     # Add user to destination group
                     await client.add_chat_members(destination_group_id, member.user.id)
-                    client.remove
+                    # delete user from contacts
+                    await client.delete_contacts(member.user.id)
                 except pyer.Flood as ex:
                     print(f"Exception:  {ex.MESSAGE}")
                     print(f"client data: {await client.get_me()}")
