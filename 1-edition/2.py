@@ -161,15 +161,15 @@ async def scrape_and_add_members():
 
     # Scrape members from origin group
     async for client in CLIENTS:
-        members = client.get_chat_members(origin_group_id)
+        members = await client.get_chat_members(origin_group_id)
         for member in members:
             # Check if user is already scraped
             if not await is_user_scraped(member.user.id):
                 try:
                     # Add user to contacts
-                    client.add_contact(member.user.id, member.user.username)
+                    await client.add_contact(member.user.id, member.user.username)
                     # Add user to destination group
-                    client.add_chat_members(destination_group_id, member.user.id)
+                    await client.add_chat_members(destination_group_id, member.user.id)
                 except pyer.Flood as ex:
                     print(f"Exception:  {ex.MESSAGE}")
                     print(f"client data: {await client.get_me()}")

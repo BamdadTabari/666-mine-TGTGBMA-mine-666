@@ -1,4 +1,8 @@
 import os
+import pyrogram 
+
+c = pyrogram.Client()
+c.get_chat_members()
 a = os.getcwd() + '\\1-edition\\clients'
 print(a)
 files = os.listdir(a)
