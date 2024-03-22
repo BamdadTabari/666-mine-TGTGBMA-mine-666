@@ -172,6 +172,7 @@ async def scrape_and_add_members():
                 break
             else:
                 limit_for_client += 1
+                
             # Check if user is already scraped
             if not await is_user_scraped(member.user.id):
                 try:
