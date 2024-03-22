@@ -8,30 +8,28 @@ import pyrogram.errors as pyer
 # -----------------DB PART START-------------------#
 
 import sqlite3
+CONN = sqlite3.connect('telegram_scraper.db')
 # We'll use SQLite for simplicity. 
 #This database will store the scraped users to avoid adding them multiple times.
 async def create_database():
-    conn = sqlite3.connect('telegram_scraper.db')
-    cursor = conn.cursor()
+    cursor = CONN.cursor()
     cursor.execute('''CREATE TABLE IF NOT EXISTS scraped_users
     (user_id INTEGER PRIMARY KEY, username TEXT)''')
-    conn.commit()
-    conn.close()
+    CONN.commit()
 
 async def is_user_scraped(user_id):
-    conn = sqlite3.connect('telegram_scraper.db')
-    cursor = conn.cursor()
+    cursor = CONN.cursor()
     cursor.execute("SELECT * FROM scraped_users WHERE user_id=?", (user_id,))
     result = cursor.fetchone()
-    conn.close()
     return result is not None
 
 async def save_user(user_id, username):
-    conn = sqlite3.connect('telegram_scraper.db')
-    cursor = conn.cursor()
+    cursor = CONN.cursor()
     cursor.execute("INSERT INTO scraped_users (user_id, username) VALUES (?, ?)", (user_id, username))
-    conn.commit()
-    conn.close()
+    CONN.commit()
+
+async def close_conn():
+    CONN.close()
 # -----------------DB PART End-------------------#
     
 # -----------------ClientManager PART START-------------------#
