@@ -152,7 +152,7 @@ async def scrape_and_add_members():
     origin_group_id,destination_group_id = await get_origin_and_dest_chat_id()
     
     #------- just for debug start ------#
-    # origin_group_id = -1002104667266
+    # origin_group_id = -1001472353926
     # destination_group_id = -1001704386011
     #------ just for debug End ---------#
 
@@ -172,7 +172,7 @@ async def scrape_and_add_members():
                 break
             else:
                 limit_for_client += 1
-                
+
             # Check if user is already scraped
             if not await is_user_scraped(member.user.id):
                 try:
