@@ -26,6 +26,19 @@
 
 #--------------- signal handler part end---------------------
 
+#-----------------VIP Import start----------------------------#
+import asyncio
+import pyrogram.errors as pyer
+# 303 - SeeOther
+# 400 - BadRequest
+# 401 - Unauthorized
+# 403 - Forbidden
+# 406 - NotAcceptable
+# 420 - Flood
+# 500 - InternalServerError
+#-----------------VIP Import end----------------------------#
+
+
 # -----------------DB PART START-------------------#
 
 import sqlite3
@@ -169,7 +182,6 @@ def sleep_bitch(second):
 # -----------------Helper PART End-------------------#
         
 # -----------------Scraper PART Start-------------------#
-from pyrogram.errors import PeerFlood
 
 def scrape_and_add_members():
     # get org and dest chat id using helper client
@@ -192,26 +204,65 @@ def scrape_and_add_members():
                     client.add_contact(member.user.id, member.user.username)
                     # Add user to destination group
                     client.add_chat_members(destination_group_id, member.user.id)
-                except PeerFlood as pe:
-                    print(f"Exception:  {pe}")
-                    print(f"""PEER_FLOOD error encountered. Probably this client is limited , check it,\n
-                        client data: {client.get_me()}\n
-                        Waiting for 5 seconds before changing client.""")
-                    sleep(5) # Wait for 60 seconds before retrying
-                    break 
+                except pyer.Flood as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")
+                    break
+                except pyer.RpcConnectFailed as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")
+                except pyer.AccessTokenExpired as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")
+                except pyer.ActiveUserRequired as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")
+                except pyer.AccessTokenInvalid as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")
+                except pyer.ApiCallError as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")
+                except pyer.ApiIdInvalid as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")
+                except pyer.ApiIdPublishedFlood as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")   
+                except pyer.BadRequest as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}") 
+                except pyer.flood_420 as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")
+                except pyer.PeerFlood as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")
+                except pyer.PhoneNumberFlood as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")
+                except pyer.FloodWait as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")
+                except pyer.PhoneNumberBanned as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")
+                except pyer.UserBannedInChannel as ex:
+                    print(f"Exception:  {ex.MESSAGE}")
+                    print(f"client data: {client.get_me()}")
                 except Exception as ex:
                     print(f"Exception: {ex}")
                     break                       
                 finally:
                     # Save user to database
                     save_user(member.user.id, member.user.username)
+    
     # Stop all clients
     stop_clients()
 
 # -----------------Scraper PART End-------------------#
 
-def main():
-    
+async def main():
     try:
         create_database()
         handle_user_actions()
@@ -240,6 +291,13 @@ def handle_user_actions():
         
 # start point
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
+    # func = main()
+    # loop = asyncio.get_event_loop()
+    # print("loop defind")
+    # loop.run_until_complete(func)
+    # print("loop started")
+    # loop.close()
+    # print("loop closed")
   
 
