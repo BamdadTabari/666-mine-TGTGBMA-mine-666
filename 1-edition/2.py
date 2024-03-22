@@ -5,7 +5,7 @@
 # import sys
 # import traceback
 
-# def signal_handler(sig, frame):
+# async def signal_handler(sig, frame):
 #     """
 #     This function will be called when the application receives a SIGINT or SIGTERM signal.
 #     """
@@ -44,7 +44,7 @@ import pyrogram.errors as pyer
 import sqlite3
 # We'll use SQLite for simplicity. 
 #This database will store the scraped users to avoid adding them multiple times.
-def create_database():
+async def create_database():
     conn = sqlite3.connect('telegram_scraper.db')
     cursor = conn.cursor()
     cursor.execute('''CREATE TABLE IF NOT EXISTS scraped_users
@@ -52,7 +52,7 @@ def create_database():
     conn.commit()
     conn.close()
 
-def is_user_scraped(user_id):
+async def is_user_scraped(user_id):
     conn = sqlite3.connect('telegram_scraper.db')
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM scraped_users WHERE user_id=?", (user_id,))
@@ -60,7 +60,7 @@ def is_user_scraped(user_id):
     conn.close()
     return result is not None
 
-def save_user(user_id, username):
+async def save_user(user_id, username):
     conn = sqlite3.connect('telegram_scraper.db')
     cursor = conn.cursor()
     cursor.execute("INSERT INTO scraped_users (user_id, username) VALUES (?, ?)", (user_id, username))
@@ -78,7 +78,7 @@ API_HASH = "3742f387f1d2804a5799bbd8e7790deb"
 if not os.path.exists(CLIENTS_DIR):
     os.makedirs(CLIENTS_DIR) # Create the directory if it doesn't exist
        
-def prepare_clients():
+async def prepare_clients():
     files = os.listdir(CLIENTS_DIR)
     for file in files:
         if not file.endswith(".session"):
@@ -88,7 +88,7 @@ def prepare_clients():
         client = Client(session_name, workdir=CLIENTS_DIR)
         CLIENTS.append(client)
 
-def add_client():
+async def add_client():
     """
     Creates a new Telegram client session using the Pyrogram library.
     The session is stored in the CLIENTS_DIR with a filename based on the session name provided by the user.
@@ -102,36 +102,36 @@ def add_client():
             print(f'- New Client {new_client.storage.database}')
             want_add_another = input("do you want to add another client? (y/n)")
             if want_add_another == "y":
-                add_client()
+                await add_client()
             elif want_add_another == "n":
-                main()
+                await main()
             else:
                 print("wrong character. Redirecting to main menu..." )
-                main()
+                await main()
     except Exception as e:
         # Catch and print any exceptions that occur during the client creation and initialization process
         print(f"Exception : {e}")
 
-def start_clients():
+async def start_clients():
     for client in CLIENTS:
         try:
-            client.start()
+            await client.start()
         except Exception as e:
             print(f"Exception : {e}")
             continue
 
-def stop_clients():
+async def stop_clients():
     for client in CLIENTS:
-        client.stop()
+        await client.stop()
 
 # -----------------ClientManager PART End-------------------#
 
 # -----------------Helper PART Start-------------------#
 from time import sleep
         
-def get_group_id( client, group_username):
+async def get_group_id( client, group_username):
     try:
-        group_info =  client.get_chat(group_username)
+        group_info =  await client.get_chat(group_username)
         return group_info.id
     except Exception as e:
         print(f"Exception: {e}")
@@ -139,29 +139,29 @@ def get_group_id( client, group_username):
         exit()
 
 
-def get_origin_and_dest_chat_id():
+async def get_origin_and_dest_chat_id():
     try:
         # start client just for get chats ids
-        client = start_helper_client()
+        client = await start_helper_client()
         # get data from user and pass the chats ids
         origin_group_username = input("origin_group_username please bitch: ")
         destination_group_username = input("destination_group_username please bitch: ")
-        origin_group_id = get_group_id(client, origin_group_username)
-        destination_group_id = get_group_id(client, destination_group_username)
+        origin_group_id = await get_group_id(client, origin_group_username)
+        destination_group_id = await get_group_id(client, destination_group_username)
         # stop the client
-        stop_helper_client(client)
+        await stop_helper_client(client)
         return origin_group_id,destination_group_id
     except Exception as e:
         print(f"Exception: {e}")
         print("fix the fucking bug first. then come back")
         exit()
     
-def start_helper_client():
+async def start_helper_client():
     try:
         # api_id = 27356729
         # api_hash = "2076532de16fc82d242fcc1a012ce5f1"
         client = Client("666mineTGTGBMAmine", api_id=API_ID, api_hash=API_HASH)
-        client.start()
+        await client.start()
         return client
     except Exception as e:
         print(f"Exception: {e}")
@@ -169,96 +169,96 @@ def start_helper_client():
         exit(0) 
         
     
-def stop_helper_client(client):
+async def stop_helper_client(client):
     try:
-        client.stop()
+        await client.stop()
     except Exception as e:
         print(f"Exception: {e}")
         print("fix the fucking bug first. then come back")
         exit(0) 
 
-def sleep_bitch(second):
+async def sleep_bitch(second):
         sleep(second)
 # -----------------Helper PART End-------------------#
         
 # -----------------Scraper PART Start-------------------#
 
-def scrape_and_add_members():
+async def scrape_and_add_members():
     # get org and dest chat id using helper client
-    origin_group_id,destination_group_id = get_origin_and_dest_chat_id()
+    origin_group_id,destination_group_id = await get_origin_and_dest_chat_id()
 
     # prepare all clients
-    prepare_clients()
+    await prepare_clients()
     
     # Start all clients
-    start_clients()
+    await start_clients()
 
     # Scrape members from origin group
-    for client in CLIENTS:
-        members = client.get_chat_members(origin_group_id)
+    async for client in CLIENTS:
+        members = await client.get_chat_members(origin_group_id)
         for member in members:
             # Check if user is already scraped
-            if not is_user_scraped(member.user.id):
+            if not await is_user_scraped(member.user.id):
                 try:
                     # Add user to contacts
-                    client.add_contact(member.user.id, member.user.username)
+                    await client.add_contact(member.user.id, member.user.username)
                     # Add user to destination group
-                    client.add_chat_members(destination_group_id, member.user.id)
+                    await client.add_chat_members(destination_group_id, member.user.id)
                 except pyer.Flood as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")
+                    print(f"client data: {await client.get_me()}")
                     break
                 except pyer.RpcConnectFailed as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")
+                    print(f"client data: {await client.get_me()}")
                 except pyer.AccessTokenExpired as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")
+                    print(f"client data: {await client.get_me()}")
                 except pyer.ActiveUserRequired as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")
+                    print(f"client data: {await client.get_me()}")
                 except pyer.AccessTokenInvalid as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")
+                    print(f"client data: {await client.get_me()}")
                 except pyer.ApiCallError as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")
+                    print(f"client data: {await client.get_me()}")
                 except pyer.ApiIdInvalid as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")
+                    print(f"client data: {await client.get_me()}")
                 except pyer.ApiIdPublishedFlood as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")   
+                    print(f"client data: {await client.get_me()}")   
                 except pyer.BadRequest as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}") 
+                    print(f"client data: {await client.get_me()}") 
                 except pyer.flood_420 as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")
+                    print(f"client data: {await client.get_me()}")
                 except pyer.PeerFlood as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")
+                    print(f"client data: {await client.get_me()}")
                 except pyer.PhoneNumberFlood as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")
+                    print(f"client data: {await client.get_me()}")
                 except pyer.FloodWait as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")
+                    print(f"client data: {await client.get_me()}")
                 except pyer.PhoneNumberBanned as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")
+                    print(f"client data: {await client.get_me()}")
                 except pyer.UserBannedInChannel as ex:
                     print(f"Exception:  {ex.MESSAGE}")
-                    print(f"client data: {client.get_me()}")
+                    print(f"client data: {await client.get_me()}")
                 except Exception as ex:
                     print(f"Exception: {ex}")
                     break                       
                 finally:
                     # Save user to database
-                    save_user(member.user.id, member.user.username)
+                    await save_user(member.user.id, member.user.username)
     
     # Stop all clients
-    stop_clients()
+    await stop_clients()
 
 # -----------------Scraper PART End-------------------#
 
@@ -271,30 +271,30 @@ async def main():
         print("fix the fucking bug first. then come back")
         exit()
 
-def handle_user_actions():
+async def handle_user_actions():
     print("""
             \n welcome to my app \n I am Uncle Bamdad \n What You Want to do?
             \n [1] Add new client \n [2] Add members to your group \n [3] Exit
-    """)
+        """)
 
     try:
         user_choice = input("Just write the number and press enter: ")
         if user_choice == str(1):
-            add_client()
+            await add_client()
         elif user_choice == str(2):
-            scrape_and_add_members()
+            await scrape_and_add_members()
         elif user_choice == str(3):
             exit()
     except Exception as e:
         print(f"Exception: {e}")
-        handle_user_actions()
+        await handle_user_actions()
         
 # start point
 if __name__ == "__main__":
     asyncio.run(main())
     # func = main()
     # loop = asyncio.get_event_loop()
-    # print("loop defind")
+    # print("loop async defind")
     # loop.run_until_complete(func)
     # print("loop started")
     # loop.close()
