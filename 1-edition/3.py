@@ -146,14 +146,14 @@ async def sleep_bitch(second):
 # -----------------Helper PART End-------------------#
         
 # -----------------Scraper PART Start-------------------#
-
+import random
 async def scrape_and_add_members():
     # get org and dest chat id using helper client
-    #origin_group_id,destination_group_id = await get_origin_and_dest_chat_id()
+    origin_group_id,destination_group_id = await get_origin_and_dest_chat_id()
     
     #------- just for debug start ------#
-    origin_group_id = -1002104667266
-    destination_group_id = -1001704386011
+    # origin_group_id = -1002104667266
+    # destination_group_id = -1001704386011
     #------ just for debug End ---------#
 
     # prepare all clients
@@ -164,7 +164,14 @@ async def scrape_and_add_members():
 
     # Scrape members from origin group
     for client in CLIENTS:
+        random_limit_for_client = random.randint(10,40)
+        limit_for_client = 0
         async for member in client.get_chat_members(origin_group_id):
+            # in this case we set a random try to add limit for our client, so we can keep it safe from bann
+            if limit_for_client >= random_limit_for_client :
+                break
+            else:
+                limit_for_client += 1
             # Check if user is already scraped
             if not await is_user_scraped(member.user.id):
                 try:
@@ -210,13 +217,15 @@ async def scrape_and_add_members():
 async def main():
     try:
         await create_database()
-        # await handle_user_actions()
+        await handle_user_actions()
         #------ just for debug Start ---------#
-        await scrape_and_add_members()
+        #await scrape_and_add_members()
         #------ just for debug End ---------#
+        await close_conn()
     except Exception as e:
         print(f"Exception: {e}")
         print("fix the fucking bug first. then come back")
+        await close_conn()
         exit()
 
 async def handle_user_actions():
