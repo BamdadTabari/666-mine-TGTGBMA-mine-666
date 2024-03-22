@@ -1,15 +1,9 @@
 #-----------------VIP Import start----------------------------#
 import asyncio
 import pyrogram.errors as pyer
-# 303 - SeeOther
-# 400 - BadRequest
-# 401 - Unauthorized
-# 403 - Forbidden
-# 406 - NotAcceptable
-# 420 - Flood
-# 500 - InternalServerError
+# 303 - SeeOther # 400 - BadRequest # 401 - Unauthorized # 403 - Forbidden
+# 406 - NotAcceptable # 420 - Flood # 500 - InternalServerError
 #-----------------VIP Import end----------------------------#
-
 
 # -----------------DB PART START-------------------#
 
@@ -167,15 +161,15 @@ async def scrape_and_add_members():
 
     # Scrape members from origin group
     async for client in CLIENTS:
-        members = await client.get_chat_members(origin_group_id)
+        members = client.get_chat_members(origin_group_id)
         for member in members:
             # Check if user is already scraped
             if not await is_user_scraped(member.user.id):
                 try:
                     # Add user to contacts
-                    await client.add_contact(member.user.id, member.user.username)
+                    client.add_contact(member.user.id, member.user.username)
                     # Add user to destination group
-                    await client.add_chat_members(destination_group_id, member.user.id)
+                    client.add_chat_members(destination_group_id, member.user.id)
                 except pyer.Flood as ex:
                     print(f"Exception:  {ex.MESSAGE}")
                     print(f"client data: {await client.get_me()}")
