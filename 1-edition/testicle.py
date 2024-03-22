@@ -4,6 +4,8 @@ import pyrogram
 c = pyrogram.Client()
 c.get_chat_members()
 c.start()
+c.add_contact()
+c.delete_contacts()
 a = os.getcwd() + '\\1-edition\\clients'
 print(a)
 files = os.listdir(a)
