@@ -6,6 +6,7 @@ c.get_chat_members()
 c.start()
 c.add_contact()
 c.delete_contacts()
+c.get_chat_members_count
 a = os.getcwd() + '\\1-edition\\clients'
 print(a)
 files = os.listdir(a)

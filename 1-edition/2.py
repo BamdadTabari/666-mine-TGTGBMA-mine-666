@@ -160,9 +160,9 @@ async def scrape_and_add_members():
     await start_clients()
 
     # Scrape members from origin group
-    async for client in CLIENTS:
-        members = await client.get_chat_members(origin_group_id)
-        for member in members:
+    for client in CLIENTS:
+        members = client.get_chat_members(origin_group_id)
+        for member in list(members):
             # Check if user is already scraped
             if not await is_user_scraped(member.user.id):
                 try:
@@ -232,8 +232,8 @@ async def scrape_and_add_members():
 
 async def main():
     try:
-        create_database()
-        handle_user_actions()
+        await create_database()
+        await handle_user_actions()
     except Exception as e:
         print(f"Exception: {e}")
         print("fix the fucking bug first. then come back")
